@@ -1,0 +1,360 @@
+/* Design reference: an editorial auction-house/gallery UI — serif wordmark, solid black/white,
+   white cards floating on full-bleed imagery, a dark solid footer band, green "reserve met"
+   accent. Pico.css supplies layout/resets; everything below overrides its color tokens to get
+   solid, high-contrast colors instead of Pico's default muted palette. */
+
+:root {
+  --font-serif: "Playfair Display", Georgia, serif;
+  --font-sans: "Inter", var(--pico-font-family, system-ui, sans-serif);
+
+  --color-accent-green: #2e7d32;
+  --color-accent-green-bg: #e7f3e8;
+  --color-footer-bg: #231f1c;
+  --color-footer-text: #f1ede7;
+
+  --pico-font-family: var(--font-sans);
+  --pico-border-radius: 0.25rem;
+  --pico-transition: background-color 0.15s ease, color 0.15s ease, border-color 0.15s ease;
+}
+
+:root,
+:root[data-theme="light"] {
+  --pico-background-color: #faf9f7;
+  --pico-color: #15120f;
+  --pico-h1-color: #15120f;
+  --pico-h2-color: #15120f;
+  --pico-muted-color: #6b6459;
+  --pico-muted-border-color: #e4ddd3;
+  --pico-card-background-color: #ffffff;
+  --pico-card-border-color: #e4ddd3;
+  --pico-card-sectioning-background-color: #ffffff;
+
+  --pico-primary: #15120f;
+  --pico-primary-background: #15120f;
+  --pico-primary-hover-background: #000000;
+  --pico-primary-border: #15120f;
+  --pico-primary-inverse: #ffffff;
+  --pico-primary-underline: #15120f;
+  --pico-primary-hover: #000000;
+  --pico-primary-focus: rgba(21, 18, 15, 0.25);
+
+  --pico-secondary: #6b6459;
+  --pico-secondary-background: #ffffff;
+  --pico-secondary-hover-background: #f1ede7;
+  --pico-secondary-border: #d8d0c3;
+  --pico-secondary-inverse: #15120f;
+  --pico-secondary-focus: rgba(107, 100, 89, 0.2);
+
+  --pico-contrast: #8a1c1c;
+  --pico-contrast-background: #8a1c1c;
+  --pico-contrast-hover-background: #6f1616;
+  --pico-contrast-border: #8a1c1c;
+  --pico-contrast-inverse: #ffffff;
+
+  --pico-form-element-background-color: #ffffff;
+  --pico-form-element-border-color: #d8d0c3;
+  --pico-form-element-color: #15120f;
+
+  --pico-code-background-color: #f1ede7;
+  color-scheme: light;
+}
+
+:root[data-theme="dark"] {
+  --pico-background-color: #121110;
+  --pico-color: #f1ede7;
+  --pico-h1-color: #f8f6f2;
+  --pico-h2-color: #f8f6f2;
+  --pico-muted-color: #a69e90;
+  --pico-muted-border-color: #322e29;
+  --pico-card-background-color: #1a1815;
+  --pico-card-border-color: #322e29;
+  --pico-card-sectioning-background-color: #1a1815;
+
+  --pico-primary: #f1ede7;
+  --pico-primary-background: #f1ede7;
+  --pico-primary-hover-background: #ffffff;
+  --pico-primary-border: #f1ede7;
+  --pico-primary-inverse: #15120f;
+  --pico-primary-underline: #f1ede7;
+  --pico-primary-hover: #ffffff;
+  --pico-primary-focus: rgba(241, 237, 231, 0.25);
+
+  --pico-secondary: #a69e90;
+  --pico-secondary-background: #1a1815;
+  --pico-secondary-hover-background: #242019;
+  --pico-secondary-border: #322e29;
+  --pico-secondary-inverse: #f1ede7;
+  --pico-secondary-focus: rgba(166, 158, 144, 0.2);
+
+  --pico-contrast: #e0675f;
+  --pico-contrast-background: #e0675f;
+  --pico-contrast-hover-background: #c94e46;
+  --pico-contrast-border: #e0675f;
+  --pico-contrast-inverse: #15120f;
+
+  --pico-form-element-background-color: #1a1815;
+  --pico-form-element-border-color: #322e29;
+  --pico-form-element-color: #f1ede7;
+
+  --color-accent-green-bg: #163a1a;
+
+  --pico-code-background-color: #1a1815;
+  color-scheme: dark;
+}
+
+body {
+  background: var(--pico-background-color);
+}
+
+/* Smaller, less chunky buttons than Pico's touch-sized defaults — literal padding/font-size
+   overrides so inputs/selects (which share Pico's form-element spacing vars) aren't affected. */
+button,
+[type="submit"],
+[type="button"],
+[role="button"] {
+  padding: 0.5rem 1.1rem;
+  font-size: 0.875rem;
+}
+
+/* No underlines anywhere by default — nav gets its own hover treatment below, everything else
+   just loses the underline (color alone signals it's a link). */
+a {
+  text-decoration: none;
+}
+
+h1, h2, h3,
+.brand {
+  font-family: var(--font-serif);
+  letter-spacing: 0.01em;
+}
+
+.app-shell {
+  max-width: 1100px;
+  margin: 0 auto;
+  padding: 0 1rem;
+}
+
+nav.navbar {
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+  padding: 1rem 0;
+  border-bottom: 1px solid var(--pico-muted-border-color);
+  margin-bottom: 2rem;
+}
+
+nav.navbar .brand {
+  font-size: 1.35rem;
+  font-weight: 700;
+  letter-spacing: 0.04em;
+  text-transform: uppercase;
+}
+
+nav.navbar .links {
+  display: flex;
+  gap: 1.25rem;
+  align-items: center;
+  flex-wrap: wrap;
+  font-size: 0.92rem;
+}
+
+nav.navbar a:not(.brand):not([role="button"]) {
+  color: var(--pico-color);
+  padding: 0.4rem 0.75rem;
+  margin: -0.4rem -0.75rem;
+  border-radius: 999px;
+}
+
+nav.navbar a:not(.brand):not([role="button"]):hover {
+  background: var(--pico-muted-border-color);
+}
+
+nav.navbar a.brand {
+  color: var(--pico-color);
+}
+
+.theme-toggle {
+  background: none;
+  color: inherit;
+  border: 1px solid var(--pico-muted-border-color);
+  border-radius: 999px;
+  width: 2.25rem;
+  height: 2.25rem;
+  display: inline-flex;
+  align-items: center;
+  justify-content: center;
+  cursor: pointer;
+  padding: 0;
+  font-size: 1rem;
+  line-height: 1;
+}
+
+.theme-toggle:hover {
+  border-color: var(--pico-primary);
+}
+
+.badge {
+  display: inline-block;
+  padding: 0.15rem 0.6rem;
+  border-radius: 999px;
+  font-size: 0.75rem;
+  font-weight: 600;
+  background: var(--pico-primary-background);
+  color: var(--pico-primary-inverse);
+}
+
+.badge.muted {
+  background: transparent;
+  border: 1px solid var(--pico-muted-border-color);
+  color: var(--pico-muted-color);
+}
+
+.badge.success {
+  background: var(--color-accent-green-bg);
+  color: var(--color-accent-green);
+}
+
+.listing-grid {
+  display: grid;
+  grid-template-columns: repeat(auto-fill, minmax(200px, 1fr));
+  gap: 1.25rem;
+}
+
+.listing-card {
+  display: block;
+  border: 1px solid var(--pico-card-border-color);
+  border-radius: var(--pico-border-radius);
+  background: var(--pico-card-background-color);
+  overflow: hidden;
+  color: inherit;
+  text-decoration: none;
+  transition: var(--pico-transition), transform 0.15s ease;
+}
+
+.listing-card:hover {
+  border-color: var(--pico-color);
+  transform: translateY(-2px);
+}
+
+.listing-card .listing-card-image {
+  aspect-ratio: 4 / 3;
+  width: 100%;
+  background: var(--pico-muted-border-color);
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  font-family: var(--font-serif);
+  font-size: 1.5rem;
+  color: var(--pico-muted-color);
+  object-fit: cover;
+}
+
+.listing-card .listing-card-body {
+  padding: 1rem;
+}
+
+.listing-card h4 {
+  margin: 0 0 0.35rem;
+  font-family: var(--font-serif);
+}
+
+.listing-card .estimate {
+  color: var(--pico-muted-color);
+  font-size: 0.85rem;
+}
+
+.error-banner {
+  background: #f8e3e1;
+  color: #7a1f1f;
+  padding: 0.6rem 1rem;
+  border-radius: var(--pico-border-radius);
+  margin-bottom: 1rem;
+  border: 1px solid #e3b4af;
+}
+
+:root[data-theme="dark"] .error-banner {
+  background: #3a1e1b;
+  color: #f3a9a2;
+  border-color: #5c2d27;
+}
+
+.success-banner {
+  background: var(--color-accent-green-bg);
+  color: var(--color-accent-green);
+  padding: 0.6rem 1rem;
+  border-radius: var(--pico-border-radius);
+  margin-bottom: 1rem;
+  border: 1px solid var(--color-accent-green);
+}
+
+table.data-table {
+  font-size: 0.9rem;
+}
+
+.pagination {
+  display: flex;
+  gap: 0.75rem;
+  align-items: center;
+  margin-top: 1.25rem;
+}
+
+/* Dark solid footer band, echoing the reference's "Buy now" / footer block. */
+footer.site-footer {
+  background: var(--color-footer-bg);
+  color: var(--color-footer-text);
+  margin-top: 3rem;
+  padding: 2rem 0;
+}
+
+footer.site-footer .app-shell {
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+  flex-wrap: wrap;
+  gap: 1rem;
+}
+
+footer.site-footer a {
+  color: var(--color-footer-text);
+}
+
+footer.site-footer small {
+  color: #b9b2a6;
+}
+
+/* ---------------------------------------------------------------- responsive --------- */
+
+@media (max-width: 768px) {
+  nav.navbar {
+    flex-direction: column;
+    align-items: flex-start;
+    gap: 0.5rem;
+  }
+
+  nav.navbar .links {
+    width: 100%;
+    gap: 0.5rem 0.75rem;
+  }
+
+  footer.site-footer .app-shell {
+    flex-direction: column;
+    align-items: flex-start;
+    gap: 0.5rem;
+  }
+}
+
+@media (max-width: 480px) {
+  .listing-grid {
+    grid-template-columns: 1fr;
+  }
+}
+
+@media (max-width: 640px) {
+  /* Tables don't reflow well on narrow screens — scroll horizontally instead of breaking
+     the layout or forcing tiny unreadable columns. */
+  table.data-table {
+    display: block;
+    overflow-x: auto;
+    white-space: nowrap;
+  }
+}
